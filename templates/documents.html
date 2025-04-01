@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}My Documents{% endblock %}
+
+{% block content %}
+  <h1>My Documents</h1>
+
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% if documents %}
+    <table class="table table-striped">
+      <thead>
+         <tr>
+             <th>Title</th>
+             <th>Detail Level</th>
+             <th>Created At</th>
+             <th>Actions</th>
+         </tr>
+      </thead>
+      <tbody>
+         {% for doc in documents %}
+            <tr>
+               <td>{{ doc.title }}</td>
+               <td>{{ doc.detail_level }}</td>
+               <td>{{ doc.created_at.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+               <td>
+                  <a href="{{ url_for('view_document', document_id=doc.id) }}" class="btn btn-info btn-sm">View</a>
+                  <a href="{{ url_for('edit_document_detail', document_id=doc.id) }}" class="btn btn-primary btn-sm">Edit Detail</a>
+               </td>
+            </tr>
+         {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No documents found.</p>
+  {% endif %}
+{% endblock %}

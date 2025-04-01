@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %}View Document{% endblock %}
+
+{% block content %}
+  <h1>{{ document.title }}</h1>
+  <p><small>Created on: {{ document.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small></p>
+  <pre>{{ document.content }}</pre>
+  <a href="{{ url_for('home') }}" class="btn btn-primary">Back to Home</a>
+{% endblock %}

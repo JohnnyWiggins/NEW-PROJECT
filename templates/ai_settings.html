@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}AI Settings{% endblock %}
+
+{% block content %}
+  <h1>AI Settings</h1>
+
+  <!-- Flash messages block -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST">
+    <div class="form-group">
+      <label for="correlation_level">Correlation Level</label>
+      <select id="correlation_level" name="correlation_level" class="form-control" required>
+        <option value="Low" {% if settings.correlation_level == "Low" %}selected="selected"{% endif %}>Low</option>
+        <option value="Medium" {% if settings.correlation_level == "Medium" %}selected="selected"{% endif %}>Medium</option>
+        <option value="High" {% if settings.correlation_level == "High" %}selected="selected"{% endif %}>High</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Settings</button>
+  </form>
+{% endblock %}
