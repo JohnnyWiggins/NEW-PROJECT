@@ -5,11 +5,23 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from speech_to_text import start_background_listening, generate_speech, stop_background_listening
 from datetime import datetime
 import re
+from flask import Response
+from flask_mail import Mail, Message
+
+
 
 # Initialize Flask app and extensions
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'wigginsjonny@gmail.com'
+app.config['MAIL_PASSWORD'] = 'zkka nxwz zyqs komy'
+mail = Mail(app)
+
 
 # Set the simulation flag for failure testing
 app.config["SIMULATE_AI_FAILURE"] = False  # Set to True to simulate failure
@@ -43,13 +55,79 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
 
+def is_valid_email(email):
+    # A stricter regex pattern for validating email addresses
+    pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    return re.match(pattern, email) is not None
+
+
 # --- ROUTES ---
-@app.route("/documents")
+@app.route("/document/<int:document_id>/share", methods=["GET", "POST"])
+@login_required
+def share_document(document_id):
+    document = Document.query.get_or_404(document_id)
+    if request.method == "POST":
+        email = request.form.get("email", "").strip()
+
+        # Use the stricter validation function
+        if not is_valid_email(email):
+            flash("Invalid email address.", "danger")
+            return redirect(url_for("share_document", document_id=document_id))
+
+        try:
+            msg = Message("Shared Document: " + document.title,
+                          sender=app.config['MAIL_USERNAME'],
+                          recipients=[email])
+            msg.body = f"Please find the document '{document.title}':\n\n{document.content}"
+            mail.send(msg)
+            flash("Document shared successfully!", "success")
+        except Exception as e:
+            flash("Error sending email. Please try again later.", "danger")
+            print("Email sending error:", e)
+        return redirect(url_for("view_document", document_id=document_id))
+
+    return render_template("share_document.html", document=document)
+
+
+@app.route("/document/<int:document_id>/download")
+@login_required
+def download_document(document_id):
+    # Retrieve the document; 404 if it does not exist
+    document = Document.query.get_or_404(document_id)
+    # Create a safe filename based on the document title
+    # You might import secure_filename from werkzeug.utils if needed, e.g.
+    # from werkzeug.utils import secure_filename
+    # filename = secure_filename(f"{document.title}.txt")
+    filename = f"{document.title}.txt"
+    # Format the content for the text file (customize as needed)
+    file_content = f"Title: {document.title}\n\nContent:\n{document.content}"
+
+    # Return the content as a text file attachment
+    return Response(
+        file_content,
+        mimetype="text/plain",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+
+@app.route("/documents", methods=["GET"])
 @login_required
 def list_documents():
-    # Retrieve all documents belonging to the current user
-    documents = Document.query.filter_by(user_id=current_user.id).all()
-    return render_template("documents.html", documents=documents)
+    # Get the search query from the URL; default is an empty string
+    query = request.args.get("q", "").strip()
+
+    # If a query is provided, filter the documents for the current user
+    if query:
+        documents = Document.query.filter(
+            Document.user_id == current_user.id,
+            (Document.title.ilike(f"%{query}%") | Document.content.ilike(f"%{query}%"))
+        ).all()
+    else:
+        # Otherwise, retrieve all documents for the current user
+        documents = Document.query.filter_by(user_id=current_user.id).all()
+
+    return render_template("documents.html", documents=documents, query=query)
+
 
 @app.route("/document/<int:document_id>/edit_detail", methods=["GET", "POST"])
 @login_required

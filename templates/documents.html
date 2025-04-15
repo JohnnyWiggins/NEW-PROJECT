@@ -5,7 +5,15 @@
 {% block content %}
   <h1>My Documents</h1>
 
-  <!-- Flash messages -->
+  <!-- Search Form -->
+  <form method="GET" action="{{ url_for('list_documents') }}" class="mb-3">
+    <div class="form-group">
+      <input type="text" name="q" placeholder="Search documents..." value="{{ query }}" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+
+  <!-- Flash Messages -->
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}
