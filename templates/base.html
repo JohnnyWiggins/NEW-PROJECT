@@ -1,53 +1,55 @@
-<!-- base.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Flask App{% endblock %}</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}Smart Minutes{% endblock %}</title>
+
+  <!-- Inter Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="{{ url_for('home') }}">Home</a>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
+    <div class="container">
+      <a class="navbar-brand font-weight-bold text-indigo" href="{{ url_for('home') }}">Smart Minutes</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ml-auto align-items-center">
           {% if current_user.is_authenticated %}
-            {% if current_user.username == 'admin' %}
-              <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('ai_settings') }}">AI Settings</a>
-              </li>
+            <li class="nav-item"><a class="nav-link text-gray" href="{{ url_for('speech_to_text_page') }}">Transcribe</a></li>
+            <li class="nav-item"><a class="nav-link text-gray" href="{{ url_for('list_documents') }}">Documents</a></li>
+            {% if current_user.username=='admin' %}
+              <li class="nav-item"><a class="nav-link text-gray" href="{{ url_for('ai_settings') }}">Settings</a></li>
             {% endif %}
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{ current_user.username }}
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="{{ url_for('speech_to_text_page') }}">Speech-to-Text</a>
-                <a class="dropdown-item" href="{{ url_for('list_documents') }}">My Documents</a>
+              <a class="nav-link dropdown-toggle text-gray" data-toggle="dropdown">{{ current_user.username }}</a>
+              <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a>
               </div>
             </li>
           {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('register') }}">Register</a>
-            </li>
+            <li class="nav-item"><a class="btn btn-indigo text-white px-4" href="{{ url_for('login') }}">Login</a></li>
+            <li class="nav-item ml-2"><a class="btn btn-outline-indigo px-4" href="{{ url_for('register') }}">Sign Up</a></li>
           {% endif %}
         </ul>
       </div>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="container mt-4">
-        {% block content %}{% endblock %}
     </div>
+  </nav>
 
-    <!-- Bootstrap JS (Optional) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,9 +1,39 @@
-<!-- home.html -->
 {% extends "base.html" %}
-
-{% block title %}Home Page{% endblock %}
-
+{% block title %}Home – Smart Minutes{% endblock %}
 {% block content %}
-<h1>Welcome to Smart Minutes!</h1>
-<p></p>
+  <section class="hero bg-white">
+    <div class="container">
+      <h1>AI-Powered Meeting Transcripts & Summaries</h1>
+      <p>Capture, transcribe, and summarize your meetings in real-time with Smart Minutes.</p>
+      <a href="{{ url_for('speech_to_text_page') }}" class="btn btn-indigo btn-lg">Start Transcribing</a>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card p-4 text-center">
+            <img src="/static/icons/transcribe.svg" alt="Transcribe" width="60" class="mx-auto">
+            <h3>Live Transcription</h3>
+            <p>Get real-time speech-to-text conversion as you speak.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-4 text-center">
+            <img src="/static/icons/summarize.svg" alt="Summarize" width="60" class="mx-auto">
+            <h3>Custom Summaries</h3>
+            <p>Choose between brief, standard, or detailed meeting summaries.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-4 text-center">
+            <img src="/static/icons/tasks.svg" alt="Tasks" width="60" class="mx-auto">
+            <h3>Task Extraction</h3>
+            <p>Automatically pull action items and to-dos from your conversations.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 {% endblock %}

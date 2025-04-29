@@ -1,22 +1,66 @@
+/* static/style.css */
+
+/* Font & Variables */
+:root {
+  --indigo: #5A67D8;
+  --gray: #2D3748;
+  --light: #F7FAFC;
+  --spacing: 80px;
+}
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 0;
-    padding: 0;
+  font-family: 'Inter', sans-serif;
+  color: var(--gray);
+  background: var(--light);
+}
+.text-indigo { color: var(--indigo) !important; }
+.btn-indigo {
+  background: var(--indigo);
+  border: none;
+  transition: background .2s ease;
+}
+.btn-indigo:hover { background: #434190; }
+.btn-outline-indigo {
+  color: var(--indigo);
+  border: 2px solid var(--indigo);
+}
+.btn-outline-indigo:hover {
+  background: var(--indigo);
+  color: white;
 }
 
-nav {
-    background: #007bff;
-    padding: 15px;
+/* Hero */
+.hero {
+  padding: var(--spacing) 0;
+  text-align: center;
+}
+.hero h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.hero p {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
 }
 
-nav a {
-    color: white;
-    text-decoration: none;
-    padding: 10px 20px;
-    margin: 0 10px;
+/* Feature Cards */
+.features {
+  padding: var(--spacing) 0;
+}
+.features .card {
+  border: none;
+  border-radius: .75rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  transition: transform .2s ease;
+}
+.features .card:hover { transform: translateY(-8px); }
+.features .card-body {
+  padding: 2rem;
+}
+.features h3 {
+  font-size: 1.25rem;
+  margin-top: 1rem;
 }
 
-nav a:hover {
-    background: #0056b3;
-}
+/* Section Spacers */
+.section { padding: var(--spacing) 0; }
